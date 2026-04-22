@@ -115,7 +115,9 @@ app.post("/new", async (req, res) => {
     });
   }else{
     try{
-    await db.query("INSERT INTO users (name, color) VALUES ($1, $2)", [name, color]);
+    const result = await db.query("INSERT INTO users (name, color) VALUES ($1, $2) RETURNING *;", [name, color]);
+    const id = result.rows[0].id;
+    currentUserId = id;
     res.redirect("/");
   }catch(e){
     console.log("Could not add a user. User already exists", e);
